@@ -240,4 +240,3 @@ Use browser DevTools → Console
 
 ---
 
-This README contains the same content as provided — only the references to Lovable have been removed.
