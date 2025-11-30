@@ -1,10 +1,6 @@
 # CodeSync Live - Real-Time Collaborative Coding Platform
 
-A beautiful, production-ready real-time pair-programming web application built with React, TypeScript, and Lovable Cloud (Supabase). Two or more users can join the same room, edit code simultaneously, and see each other's changes instantly with WebSocket-powered synchronization.
-
-![CodeSync Live](https://img.shields.io/badge/Built%20with-Lovable-FF6B6B)
-![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?logo=typescript&logoColor=white)
-![React](https://img.shields.io/badge/React-20232A?logo=react&logoColor=61DAFB)
+A beautiful, production-ready real-time pair-programming web application built with React, TypeScript, and Supabase. Two or more users can join the same room, edit code simultaneously, and see each other's changes instantly with WebSocket-powered synchronization.
 
 ## 🚀 Features
 
@@ -87,13 +83,6 @@ Table: chat_messages
 3. `sync`, `join`, and `leave` events update user list
 4. Online users displayed in header and bottom-right panel
 
-### AI Autocomplete Flow
-
-1. User stops typing for 600ms (debounced)
-2. Frontend calls `/autocomplete` edge function
-3. Edge function returns mocked suggestion based on language
-4. Suggestion displays in UI for 5 seconds
-5. Suggestion fades out automatically
 
 ## 📁 Project Structure
 
@@ -168,28 +157,8 @@ The backend (database and edge functions) is automatically connected via Lovable
 - **Chat**: Click the message icon to open the chat sidebar
 - **Language**: Select Python, JavaScript, or TypeScript from the dropdown
 - **Presence**: See who's online with usernames in the header and bottom panel
-- **AI Help**: Pause typing to get AI-powered suggestions
 - **Share**: Copy room link to invite team members
 - **Conflict Prevention**: Debounced updates and echo prevention avoid editing conflicts
-
-## 🎨 Design System
-
-### Color Palette
-- **Primary (Cyan)**: `hsl(189 94% 43%)` - Main brand color, CTAs
-- **Secondary (Green)**: `hsl(142 76% 36%)` - Success states, accents
-- **Accent (Purple)**: `hsl(271 81% 56%)` - Special highlights
-- **Background**: `hsl(217 33% 7%)` - Deep dark base
-- **Card**: `hsl(220 30% 10%)` - Elevated surfaces
-
-### Typography
-- System fonts with fallback to sans-serif
-- Monaco Editor uses monospace: 'Fira Code', 'Cascadia Code', Consolas
-
-### Animations
-- Smooth transitions with cubic-bezier easing
-- Fade-in and slide-in animations on page load
-- Glow effects on hover for interactive elements
-- Sequential animation delays for staggered reveals
 
 ## 🔧 Configuration
 
@@ -218,7 +187,6 @@ Modify in `supabase/functions/autocomplete/index.ts`:
 ### View Console Logs
 - Open browser DevTools (F12)
 - Check Console tab for frontend logs
-- Edge function logs available in Lovable Cloud dashboard
 
 ### Common Issues
 
@@ -237,130 +205,4 @@ Modify in `supabase/functions/autocomplete/index.ts`:
 - Check that `chat_messages` table has proper RLS policies
 - Ensure Realtime is enabled on `chat_messages` table
 
-**Autocomplete not working**
-- Check edge function logs in Lovable Cloud
-- Verify CORS headers in edge function
-- Check network tab for failed requests
 
-**Multiple users editing conflicts**
-- This is expected with simultaneous edits
-- The 300ms debounce reduces conflicts
-- Last write wins (simple conflict resolution)
-- For production, implement OT or CRDT algorithms
-
-## 📊 Performance Considerations
-
-### Current Implementation
-- In-memory state per room (PostgreSQL)
-- Database updates on every keystroke (with optimistic UI)
-- WebSocket connections scale with Supabase infrastructure
-
-### Optimizations for Production
-- **Conflict Resolution**: Implement operational transformation (OT) or CRDT for true multi-user editing
-- **Delta Sync**: Send only code deltas instead of full content (currently sends full code)
-- **Cursor Sharing**: Show each user's cursor position in the editor
-- **Connection Status**: Add indicators for connection state and auto-reconnect
-- **Rate Limiting**: Further optimize database update frequency
-- **Batching**: Batch multiple rapid changes into single updates
-- **Caching**: Add Redis or similar for frequently accessed rooms
-- **Authentication**: Move from localStorage usernames to proper auth
-
-## 🚀 Deployment
-
-### Frontend
-Deploy through Lovable:
-1. Click "Publish" button in Lovable interface
-2. Frontend deploys to Lovable's CDN
-3. Custom domain available on paid plans
-
-### Backend
-- Database and edge functions deploy automatically with code changes
-- No manual deployment needed
-- Real-time capabilities work out of the box
-
-## 🔐 Security Notes
-
-### Current Security (Prototype)
-- **Open access**: Anyone can create/join/edit rooms
-- **No authentication**: Users are anonymous
-- **Public RLS policies**: All operations allowed for prototype purposes
-
-### Production Recommendations
-1. **Add Authentication**
-   - Implement email/password or OAuth
-   - Link rooms to user IDs
-   - Restrict room creation to authenticated users
-
-2. **Update RLS Policies**
-   ```sql
-   -- Only room creator can delete
-   -- Only room members can view/edit
-   -- Implement role-based access
-   ```
-
-3. **Add Rate Limiting**
-   - Limit room creation per IP/user
-   - Throttle code updates
-   - Prevent abuse of edge functions
-
-4. **Input Validation**
-   - Sanitize code content
-   - Validate room codes
-   - Limit code content size
-
-5. **Monitoring**
-   - Track edge function usage
-   - Monitor database performance
-   - Set up error alerting
-
-## 🎯 Future Enhancements
-
-### Near Term
-- [x] Real-time chat sidebar
-- [x] User nicknames and presence
-- [ ] Cursor position indicators for each user
-- [ ] User avatars with color coding
-- [ ] Code execution environment
-- [ ] File upload support
-- [ ] Syntax error highlighting
-- [ ] Private rooms with passwords
-
-### Long Term
-- [ ] Real AI autocomplete with OpenAI/Anthropic
-- [ ] Video/voice chat integration
-- [ ] Code review and commenting
-- [ ] Version history and rollback
-- [ ] Export code to GitHub
-- [ ] Terminal sharing
-- [ ] Whiteboard/diagramming tool
-
-## 🤝 Contributing
-
-This is a prototype project. To contribute:
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
-
-## 📝 License
-
-This project is built with Lovable and uses open-source technologies. Check individual component licenses for details.
-
-## 🙏 Acknowledgments
-
-- **Monaco Editor** - Microsoft's excellent code editor
-- **Supabase** - Powers the backend infrastructure
-- **Lovable** - Rapid full-stack development platform
-- **shadcn/ui** - Beautiful, accessible UI components
-
-## 📞 Support
-
-For issues, questions, or feature requests:
-1. Check the debugging section above
-2. Review Lovable Cloud documentation
-3. Contact support through Lovable platform
-
----
-
-**Built with ❤️ using Lovable - Ship faster, build better**
