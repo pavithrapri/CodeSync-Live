@@ -2,87 +2,101 @@
 
 A beautiful, production-ready real-time pair-programming web application built with React, TypeScript, and Supabase. Two or more users can join the same room, edit code simultaneously, and see each other's changes instantly with WebSocket-powered synchronization.
 
+---
+
 ## 🚀 Features
 
-### Core Functionality
-- ✨ **Real-Time Collaboration**: Multiple users can code together with instant synchronization (true simultaneous editing)
-- 💬 **Live Chat**: Built-in chat sidebar for team communication while coding
-- 🤖 **AI Autocomplete**: Mocked AI-powered suggestions that appear after typing pauses
-- 🎨 **Beautiful UI**: Modern dark theme with VS Code-inspired aesthetics and smooth animations
-- 🌐 **Multi-Language Support**: Python, JavaScript, and TypeScript with syntax highlighting
-- 👥 **User Presence**: Live indicators showing who's online with usernames
-- 📋 **Easy Sharing**: One-click room link copying for inviting collaborators
-- 🔄 **Conflict Resolution**: Debounced updates prevent editing conflicts
+### **Core Functionality**
 
-### Technical Highlights
-- **WebSocket Sync**: Real-time database updates using Supabase Realtime
-- **Monaco Editor**: Industry-standard code editor (powers VS Code)
-- **PostgreSQL Database**: Persistent room state with proper indexing
-- **Edge Functions**: Serverless backend for autocomplete suggestions
-- **Row Level Security**: Proper database security policies (public for prototype)
+* ✨ **Real-Time Collaboration:** Multiple users can code together with instant synchronization (true simultaneous editing)
+* 💬 **Live Chat:** Built-in chat sidebar for team communication while coding
+* 🤖 **AI Autocomplete:** Mocked AI-powered suggestions that appear after typing pauses
+* 🎨 **Beautiful UI:** Modern dark theme with VS Code-inspired aesthetics and smooth animations
+* 🌐 **Multi-Language Support:** Python, JavaScript, and TypeScript with syntax highlighting
+* 👥 **User Presence:** Live indicators showing who's online with usernames
+* 📋 **Easy Sharing:** One-click room link copying for inviting collaborators
+* 🔄 **Conflict Resolution:** Debounced updates prevent editing conflicts
+
+### **Technical Highlights**
+
+* **WebSocket Sync:** Real-time database updates using Supabase Realtime
+* **Monaco Editor:** Industry-standard code editor (powers VS Code)
+* **PostgreSQL Database:** Persistent room state with proper indexing
+* **Edge Functions:** Serverless backend for autocomplete suggestions
+* **Row Level Security:** Database-level security policies (public for prototype)
+
+---
 
 ## 🏗️ Architecture
 
-### Frontend Stack
-- **React 18** - Modern React with hooks
-- **TypeScript** - Type-safe development
-- **Monaco Editor** - Professional code editing experience
-- **Tailwind CSS** - Utility-first styling with custom design system
-- **React Router** - Client-side routing
-- **Sonner** - Beautiful toast notifications
+### **Frontend Stack**
 
-### Backend Stack (Lovable Cloud)
-- **PostgreSQL** - Primary database for room state
-- **Supabase Realtime** - WebSocket-based real-time synchronization
-- **Edge Functions (Deno)** - Serverless TypeScript functions
-- **Row Level Security** - Database-level security policies
+* React 18 – Modern React with hooks
+* TypeScript – Type-safe development
+* Monaco Editor – Professional code editing experience
+* Tailwind CSS – Utility-first styling with custom design system
+* React Router – Client-side routing
+* Sonner – Beautiful toast notifications
 
-### Database Schema
+### **Backend Stack**
 
-```sql
-Table: rooms
-- id (UUID, Primary Key)
-- room_code (TEXT, Unique) - 6-character room identifier
-- name (TEXT) - Room display name
-- language (TEXT) - Selected programming language
-- code_content (TEXT) - Current code state
-- active_users (JSONB) - JSON array of active users
-- created_at (TIMESTAMP)
-- updated_at (TIMESTAMP) - Auto-updated on changes
+* PostgreSQL – Primary database for room state
+* Supabase Realtime – WebSocket-based real-time synchronization
+* Edge Functions (Deno) – Serverless TypeScript functions
+* Row Level Security – Database-level security policies
 
-Table: chat_messages
-- id (UUID, Primary Key)
-- room_id (UUID, Foreign Key → rooms.id)
-- username (TEXT) - Message sender's name
-- message (TEXT) - Message content
-- created_at (TIMESTAMP)
-```
+---
 
-### Real-Time Synchronization Flow
+## 📊 Database Schema
 
-**Code Editing:**
+### **Table: rooms**
+
+* `id` (UUID, Primary Key)
+* `room_code` (TEXT, Unique) – 6-character room identifier
+* `name` (TEXT) – Room display name
+* `language` (TEXT) – Selected programming language
+* `code_content` (TEXT) – Current code state
+* `active_users` (JSONB) – JSON array of active users
+* `created_at` (TIMESTAMP)
+* `updated_at` (TIMESTAMP)
+
+### **Table: chat_messages**
+
+* `id` (UUID, Primary Key)
+* `room_id` (UUID, Foreign Key → rooms.id)
+* `username` (TEXT) – Message sender's name
+* `message` (TEXT) – Message content
+* `created_at` (TIMESTAMP)
+
+---
+
+## 🔄 Real-Time Synchronization Flow
+
+### **Code Editing:**
+
 1. User types in Monaco Editor
 2. `handleCodeChange` captures the change with 300ms debounce
-3. Code updates local state immediately (optimistic update)
-4. Debounced database update sent to Supabase
-5. Supabase broadcasts change via WebSocket
-6. Other users receive update via Realtime subscription
-7. Remote changes update their editor (with echo prevention)
-8. Local change flag prevents feedback loops
+3. Code updates locally (optimistic UI)
+4. Debounced update sent to Supabase
+5. Supabase broadcasts via WebSocket
+6. Other users receive update instantly
+7. Echo-prevention avoids update loops
 
-**Chat System:**
-1. User sends message in chat sidebar
-2. Message inserted into `chat_messages` table
-3. Supabase Realtime broadcasts INSERT event
-4. All connected users receive message instantly
-5. Messages auto-scroll to bottom
+### **Chat System:**
 
-**User Presence:**
-1. User joins room and provides username
-2. Presence channel tracks user with username + timestamp
-3. `sync`, `join`, and `leave` events update user list
-4. Online users displayed in header and bottom-right panel
+1. User sends message
+2. Inserted into `chat_messages`
+3. Supabase broadcasts INSERT event
+4. All users receive message in real time
+5. Chat auto-scrolls to bottom
 
+### **User Presence:**
+
+* User joins and provides username
+* Presence channel tracks join/leave/sync
+* Online users shown in header and bottom panel
+
+---
 
 ## 📁 Project Structure
 
@@ -107,102 +121,123 @@ Table: chat_messages
 └── README.md
 ```
 
+---
+
 ## 🚀 Getting Started
 
-### Prerequisites
-- Node.js 18+ and npm installed
-- Modern web browser (Chrome, Firefox, Safari, Edge)
+### **Prerequisites**
 
-### Local Development
+* Node.js 18+ and npm
+* Modern web browser (Chrome, Firefox, Safari, Edge)
 
-1. **Clone the repository**
-   ```bash
-   git clone <your-git-url>
-   cd <project-name>
-   ```
+### **Local Development**
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
+1. Clone the repository:
 
-3. **Start the development server**
-   ```bash
-   npm run dev
-   ```
+```bash
+git clone <your-git-url>
+cd <project-name>
+```
 
-4. **Open your browser**
-   ```
-   Navigate to http://localhost:8080
-   ```
+2. Install dependencies:
 
-The backend (database and edge functions) is automatically connected via Lovable Cloud - no additional setup required!
+```bash
+npm install
+```
+
+3. Start the development server:
+
+```bash
+npm run dev
+```
+
+4. Open your browser:
+
+```
+http://localhost:8080
+```
+
+The backend connection is automatic — no additional setup required.
+
+---
 
 ## 🎮 How to Use
 
-### Creating a Room
-1. Click "Create Room" on the home page
+### **Creating a Room**
+
+1. Click **Create Room**
 2. A unique 6-character room code is generated
-3. You're automatically redirected to the room
-4. Share the room code or click the copy icon to invite others
+3. You are redirected to the new room
+4. Share the code or copy the invite link
 
-### Joining a Room
-1. Enter a 6-character room code
-2. Click "Join Room"
-3. Provide your username
-4. Start coding collaboratively!
+### **Joining a Room**
 
-### Collaborative Coding
-- **Edit Together**: Type in the editor - changes sync in real-time with 300ms debounce
-- **Chat**: Click the message icon to open the chat sidebar
-- **Language**: Select Python, JavaScript, or TypeScript from the dropdown
-- **Presence**: See who's online with usernames in the header and bottom panel
-- **Share**: Copy room link to invite team members
-- **Conflict Prevention**: Debounced updates and echo prevention avoid editing conflicts
+* Enter a 6-character code
+* Click **Join Room**
+* Enter your username
+* Start coding together!
+
+### **Collaborative Coding**
+
+* Real-time shared editing
+* Open chat sidebar for conversation
+* Select language (Python, JS, TS)
+* See online users
+* Copy invite link anytime
+* Debounce + echo prevention avoids conflicts
+
+---
 
 ## 🔧 Configuration
 
-### Room Settings
-Edit in `src/pages/Home.tsx`:
-- Default language (currently Python)
-- Default code template
-- Room code generation logic
+### **Room Settings** (in `Home.tsx`)
 
-### Editor Options
-Customize in `src/pages/Room.tsx`:
-- Font size and family
-- Minimap visibility
-- Line numbers
-- Word wrap
-- Rulers (80, 120 characters)
+* Default language
+* Default code template
+* Room code generator
 
-### Autocomplete Behavior
-Modify in `supabase/functions/autocomplete/index.ts`:
-- Suggestion sets per language
-- Response format
-- Error handling
+### **Editor Options** (in `Room.tsx`)
+
+* Font settings
+* Minimap toggle
+* Line numbers
+* Word wrap
+* Rulers (80, 120 chars)
+
+### **Autocomplete Logic** (in `supabase/functions/autocomplete/index.ts`)
+
+* Suggestion rules
+* Response formatting
+* Error handling
+
+---
 
 ## 🐛 Debugging
 
-### View Console Logs
-- Open browser DevTools (F12)
-- Check Console tab for frontend logs
+### **Console Logs**
 
-### Common Issues
+Use browser DevTools → Console
 
-**Room not found**
-- Verify room code is correct (case-insensitive)
-- Check database connection in Lovable Cloud
+### **Common Issues**
 
-**Changes not syncing**
-- Check browser console for WebSocket errors
-- Verify Supabase Realtime is enabled on both tables
-- Ensure RLS policies allow read/write access
-- Try refreshing the page to reconnect WebSocket
+**Room not found:**
 
-**Chat not working**
-- Verify username was set (check localStorage)
-- Check that `chat_messages` table has proper RLS policies
-- Ensure Realtime is enabled on `chat_messages` table
+* Ensure room code is valid
+* Check database connection
 
+**Changes not syncing:**
 
+* Check for WebSocket errors
+* Ensure Supabase Realtime is enabled
+* Validate RLS policies
+* Refresh page to reconnect
+
+**Chat not working:**
+
+* Ensure username was saved
+* RLS policies for `chat_messages`
+* Realtime enabled for chat table
+
+---
+
+This README contains the same content as provided — only the references to Lovable have been removed.
